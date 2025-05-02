@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block title %} Database Values {% endblock title %}
+
+
+{% block content %}
+
+{% for item in all_members %}
+<p>
+    {{item.name}}<br>
+    {{item.email}} <br><br>
+    <hr>
+</p>
+{% endfor %}
+
+{% endblock content %}
