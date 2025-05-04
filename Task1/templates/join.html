@@ -8,7 +8,7 @@ Django Task
 
 {% block content %}
 
-<form method="POST" action="{% url 'show' %}">
+<form method="POST" action="{% url 'join' %}">
   {% csrf_token %}
     <div class="mb-3">
         <input placeholder='Name' type="text" class="form-control" id="exampleInputEmail1" aria-describedby="Name" name='name'>
