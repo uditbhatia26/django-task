@@ -8,30 +8,33 @@ def show(request):
     Return all members as JSON.
     """
     if request.method == 'GET':
-        members = list(Member.objects.values())  # Converts queryset to list of dicts
+        members = list(Member.objects.values())
         return JsonResponse({"members": members}, safe=False)
     return JsonResponse({"error": "Only GET method allowed."}, status=405)
 
 
-@csrf_exempt  # Only for development/testing – for production, handle CSRF properly
+@csrf_exempt
 def join(request):
-    """
-    Add a member using JSON POST request.
-    """
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            name = data.get('name')
-            email = data.get('email')
-            password = data.get('password')
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        file = request.FILES.get('file')  
 
-            if not name or not email or not password:
-                return JsonResponse({"error": "Missing required fields"}, status=400)
+        if not name or not email or not password:
+            return JsonResponse({"error": "Missing required fields"}, status=400)
 
-            member = Member.objects.create(name=name, email=email, password=password)
-            return JsonResponse({"message": "Member created successfully", "member_id": member.id}, status=201)
+        member = Member.objects.create(
+            name=name,
+            email=email,
+            password=password,
+            file=file
+        )
 
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON"}, status=400)
+        return JsonResponse({
+            "message": "Member created successfully",
+            "member_id": member.id,
+            "file_url": member.file.url if member.file else None
+        }, status=201)
 
     return JsonResponse({"error": "Only POST method allowed."}, status=405)
